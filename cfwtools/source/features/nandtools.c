@@ -1,0 +1,201 @@
+#include "common.h"
+#include "menu.h"
+#include "nandtools.h"
+#include "console.h"
+#include "draw.h"
+#include "hid.h"
+#include "fs.h"
+#include "padgen.h"
+#include "crypto.h"
+#include "ncch.h"
+#include "NandDumper.h"
+#include "stdio.h"
+
+#define nCoolFiles sizeof(CoolFiles)/sizeof(CoolFiles[0])
+
+u32 selectedFile;
+void SelectFile();
+
+static struct {
+    char* name;
+    char* path;
+} CoolFiles[] = {
+    {"movable.sed", "private/movable.sed"},
+    {"SecureInfo_A", "rw/sys/SecureInfo_A"},
+    {"LocalFriendCodeSeed_B", "rw/sys/LocalFriendCodeSeed_B"},
+    {"rand_seed", "rw/sys/rand_seed"},
+    {"ticket.db", "dbs/ticket.db"},
+};
+
+static Menu CoolFilesMenu = {
+	"Choose the file to work on",
+	.Option = (MenuEntry[5]){
+        {" movable.sed", &SelectFile},
+        {" SecureInfo_A", &SelectFile},
+        {" LocalFriendCodeSeed_B", &SelectFile},
+        {" rand_seed", &SelectFile},
+        {" ticket.db", &SelectFile},
+	},
+	nCoolFiles,
+	0,
+	0
+};
+
+void SelectFile(){
+    selectedFile = CoolFilesMenu.Current;
+}
+
+char tmpstr[256];
+
+void dumpCoolFiles()
+{
+	int nandtype = NandSwitch();
+	if (nandtype == UNK_NAND) return;
+
+	selectedFile = -1;
+	MenuInit(&CoolFilesMenu);
+	MenuShow();
+
+	while (true)
+	{
+		u32 pad_state = InputWait();
+		if (pad_state & BUTTON_DOWN) MenuNextSelection();
+		if (pad_state & BUTTON_UP) MenuPrevSelection();
+		if (pad_state & BUTTON_A) { MenuSelect(); break; }
+		if (pad_state & BUTTON_B) break;
+		MenuShow();
+	}
+
+	if (selectedFile == -1) return;
+	ConsoleInit();
+	ConsoleSetTitle("File Dumper: %s", CoolFiles[selectedFile].name);
+
+	char dest[256];
+	sprintf(dest, "tools/%s", CoolFiles[selectedFile].name);
+	sprintf(tmpstr, "%d:%s", nandtype, CoolFiles[selectedFile].path);
+	print("Dumping...\n"); ConsoleShow();
+
+	char *showres;
+	unsigned int res = FSFileCopy(dest, tmpstr);
+	if (res != 0 && selectedFile == 1)
+	{
+		/* Fix for SecureInfo_B */
+		print("Error. Trying with SecureInfo_B...\n");
+		sprintf(dest, "tools/%.11s%c", CoolFiles[selectedFile].name, 'B');
+		sprintf(tmpstr, "%d:%.18s%c", nandtype, CoolFiles[selectedFile].path, 'B');
+		res = FSFileCopy(dest, tmpstr);
+	} else
+	if (res != 0 && selectedFile == 2)
+	{
+		/* Fix for LocalFriendCodeSeed_A */
+		print("Error. Trying with LocalFriendCodeSeed_A...\n");
+		sprintf(dest, "tools/%.20s%c", CoolFiles[selectedFile].name, 'A');
+		sprintf(tmpstr, "%d:%.27s%c", nandtype, CoolFiles[selectedFile].path, 'A');
+		res = FSFileCopy(dest, tmpstr);
+	}
+
+	switch ((res >> 8) & 0xFF)
+	{
+		case 0:
+			showres = "Success!";
+			break;
+		case 1:
+			showres = "Error opening input file.";
+			break;
+		case 2:
+			showres = "Error creating output file.";
+			break;
+		case 3:
+		case 4:
+			showres = "Error reading input file.";
+			break;
+		case 5:
+		case 6:
+			showres = "Error writing output file.";
+			break;
+		default:
+			showres = "Failure!";
+			break;
+	}
+
+	print(showres);
+	print("\n\nPress A to exit\n");
+	ConsoleShow();
+	WaitForButton(BUTTON_A);
+}
+
+void restoreCoolFiles()
+{
+	int nandtype = NandSwitch();
+	if (nandtype == UNK_NAND) return;
+
+	selectedFile = -1;
+	MenuInit(&CoolFilesMenu);
+	MenuShow();
+	while (true)
+	{
+		u32 pad_state = InputWait();
+		if (pad_state & BUTTON_DOWN) MenuNextSelection();
+		if (pad_state & BUTTON_UP) MenuPrevSelection();
+		if (pad_state & BUTTON_A) { MenuSelect(); break; }
+		if (pad_state & BUTTON_B) break;
+		MenuShow();
+	}
+
+	if (selectedFile == -1) return;
+	ConsoleInit();
+	ConsoleSetTitle("File Inject: %s", CoolFiles[selectedFile].name);
+
+	char dest[256];
+	sprintf(tmpstr, "tools/%s", CoolFiles[selectedFile].name);
+	sprintf(dest, "%d:%s", nandtype, CoolFiles[selectedFile].path);
+	print("Injecting...\n"); ConsoleShow();
+
+	char *showres;
+	unsigned int res = FSFileCopy(dest, tmpstr);
+	if (res != 0 && selectedFile == 1)
+	{
+		/* Fix for SecureInfo_B */
+		print("Error. Trying with SecureInfo_B...\n");
+		sprintf(tmpstr, "tools/%.11s%c", CoolFiles[selectedFile].name, 'B');
+		sprintf(dest, "%d:%.18s%c", nandtype, CoolFiles[selectedFile].path, 'B');
+		res = FSFileCopy(dest, tmpstr);
+	} else
+	if (res != 0 && selectedFile == 2)
+	{
+		/* Fix for LocalFriendCodeSeed_A */
+		print("Error. Trying with LocalFriendCodeSeed_A...\n");
+		sprintf(tmpstr, "tools/%.20s%c", CoolFiles[selectedFile].name, 'A');
+		sprintf(dest, "%d:%.27s%c", nandtype, CoolFiles[selectedFile].path, 'A');
+		res = FSFileCopy(dest, tmpstr);
+	}
+
+	switch ((res >> 8) & 0xFF)
+	{
+		case 0:
+			showres = "Success!";
+			break;
+		case 1:
+			showres = "Error opening input file.";
+			break;
+		case 2:
+			showres = "Error creating output file.";
+			break;
+		case 3:
+		case 4:
+			showres = "Error reading input file.";
+			break;
+		case 5:
+		case 6:
+			showres = "Error writing output file.";
+			break;
+		default:
+			showres = "Failure!";
+			break;
+	}
+
+	print(showres);
+	print("\n\nPress A to exit\n");
+	ConsoleShow();
+	WaitForButton(BUTTON_A);
+}
