@@ -180,7 +180,7 @@ void InstallConfigData(){
 
 	//checks for ver.txt if it's gone, reapplies default file
 	if (verexist == 0){
-		u8 vertext[8] = { 0x30, 0x0D, 0x0A, 0x41, 0x42, 0x43, 0x44, 0x45, };
+		u8 vertext[8] = { 0x30, 0x0D, 0x0A, 0x41, 0x42, 0x43, 0x44, 0x45 };
 
 		FileOpen(&verfile2, VERSTRING, 1);
 		FileWrite(&verfile2, &vertext, 15, 0);
