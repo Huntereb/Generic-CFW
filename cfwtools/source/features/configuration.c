@@ -183,7 +183,7 @@ void InstallConfigData(){
 		u8 vertext[8] = { 0x30, 0x0D, 0x0A, 0x41, 0x42, 0x43, 0x44, 0x45 };
 
 		FileOpen(&verfile2, VERSTRING, 1);
-		FileWrite(&verfile2, &vertext, 15, 0);
+		FileWrite(&verfile2, &vertext, 8, 0);
 		FileClose(&verfile2);
 
 		goto skipcheck;
