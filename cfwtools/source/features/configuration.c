@@ -43,7 +43,7 @@ int InstallData(char* drive){
 	
 	//Create patched native_firm
 	f_read(&firmfile, WORKBUF, NAT_SIZE, &tmpu32);
-	u8* n_firm = decryptFirmTitle(WORKBUF, NAT_SIZE, 0x00000002);
+	u8* n_firm = decryptFirmTitle(WORKBUF, NAT_SIZE, 0x00000002, 1);
 	u8* n_firm_patch = GetFilePack("nat_patch.bin");
 	applyPatch(n_firm, n_firm_patch);
 	u8 keyx[16] = { 0xCE, 0xE7, 0xD8, 0xAB, 0x30, 0xC0, 0x0D, 0xAE, 0x85, 0x0E, 0xF5, 0xE3, 0x82, 0xAC, 0x5A, 0xF3 };
@@ -78,7 +78,7 @@ int InstallData(char* drive){
 	
 	//Create AGB patched firmware
 	f_read(&firmfile, WORKBUF, AGB_SIZE, &tmpu32);
-	u8* a_firm = decryptFirmTitle(WORKBUF, AGB_SIZE, 0x00000202);
+	u8* a_firm = decryptFirmTitle(WORKBUF, AGB_SIZE, 0x00000202, 1);
 	u8* a_firm_patch = GetFilePack("agb_patch.bin");
 	if(a_firm){
 		applyPatch(a_firm, a_firm_patch);
@@ -112,7 +112,7 @@ int InstallData(char* drive){
 	
 	//Create TWL patched firmware
 	f_read(&firmfile, WORKBUF, TWL_SIZE, &tmpu32);
-	u8* t_firm = decryptFirmTitle(WORKBUF, TWL_SIZE, 0x00000102);
+	u8* t_firm = decryptFirmTitle(WORKBUF, TWL_SIZE, 0x00000102, 1);
 	u8* t_firm_patch = GetFilePack("twl_patch.bin");
 	if(t_firm){
 		applyPatch(t_firm, t_firm_patch);

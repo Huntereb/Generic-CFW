@@ -64,12 +64,13 @@ static Menu InjectMenu = {
 
 static Menu ExploitMenu = {
 	"Other Options",
-	.Option = (MenuEntry[3]){
+	.Option = (MenuEntry[4]){
 		{" Downgrade MSET on SysNAND", &downgradeMSET},
 		{" Install FBI over Health&Safety App", &installFBI},
 		{" Restore original Health&Safety App", &restoreHS},
+		{" DevMode (Simple Sysnand CFW)", &DevMode},
 	},
-	3,
+	4,
 	0,
 	0
 };
@@ -141,7 +142,7 @@ static void Credits(){
 }
 
 static Menu MainMenu = {
-		"Generic CFW [v1.4.7]",
+		"Generic CFW [BETA v1.0.1]",
 		.Option = (MenuEntry[7]){
 			{" Launch CFW on EmuNAND", &cfwModeEmu},
 			{" Launch CFW on SysNAND", &cfwModeSys},
