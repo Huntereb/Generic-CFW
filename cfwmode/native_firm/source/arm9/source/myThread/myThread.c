@@ -31,8 +31,8 @@ void patchregion(){
 
 void patch_processes(){
 	char* mset = (void*)0x24000000;
-	char* menu = (void*)0x26A00000;
-	for(int i = 0; i < 0x600000; i+=4){
+	char* menu = (void*)0x26960000;
+	for(int i = 0; i < 0x7A0000; i+=4){
 		//System Menu code, which locks the region
 		if(dest == (void*)0x20000400){	//This means we haven't still found our code
 			if( (*((unsigned int*)(menu + i + 0x0)) == *((unsigned int*)&originalcode[0x0])) &&
