@@ -120,7 +120,6 @@ int InstallData(char* drive){
 		if(FileOpen(&tempfile, tmpstr, 1)){
 			FileWrite(&tempfile, t_firm, TWL_SIZE, 0);
 			FileClose(&tempfile);
-			//FileCopy("0004013800000102.bin", tmpstr);
 		}else return CONF_ERRNFIRM;
 			DrawString(TOP_SCREEN, "O", 123, SCREEN_HEIGHT - 11, WHITE, BLACK);
 	}else{
@@ -180,10 +179,10 @@ void InstallConfigData(){
 
 	//checks for ver.txt if it's gone, reapplies default file
 	if (verexist == 0){
-		u8 vertext[8] = { 0x30, 0x0D, 0x0A, 0x41, 0x42, 0x43, 0x44, 0x45 };
+		u8 vertext[10] = { 0x30, 0x0D, 0x0A, 0x41, 0x42, 0x43, 0x44, 0x45, 0x0D, 0x00};
 
 		FileOpen(&verfile2, VERSTRING, 1);
-		FileWrite(&verfile2, &vertext, 8, 0);
+		FileWrite(&verfile2, &vertext, 10, 0);
 		FileClose(&verfile2);
 
 		goto skipcheck;

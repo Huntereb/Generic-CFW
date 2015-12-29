@@ -142,7 +142,7 @@ static void Credits(){
 }
 
 static Menu MainMenu = {
-		"Generic CFW [BETA v1.0.2]",
+		"Generic CFW [BETA v1.0.3]",
 		.Option = (MenuEntry[7]){
 			{" Launch CFW on EmuNAND", &cfwModeEmu},
 			{" Launch CFW on SysNAND", &cfwModeSys},

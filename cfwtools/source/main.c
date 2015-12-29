@@ -63,13 +63,11 @@ int main(){
 	Initialize();
 
 	if (firmexist == 0){
-		DrawString(TOP_SCREEN, "FIRMWARE.BIN NOT FOUND IN TOOLS/FIRM/!", 75, SCREEN_HEIGHT - 10, RED, BLACK);
+		DrawString(TOP_SCREEN, "FIRMWARE.BIN NOT FOUND IN /TOOLS/FIRM!", 75, SCREEN_HEIGHT - 10, RED, BLACK);
 	}
 
-	//7.X Keys stuff
-		u8 keyX[16] = { 0xCE, 0xE7, 0xD8, 0xAB, 0x30, 0xC0, 0x0D, 0xAE, 0x85, 0x0E, 0xF5, 0xE3, 0x82, 0xAC, 0x5A, 0xF3 };
-		setup_aeskeyX(0x25, keyX);
-		DrawString(TOP_SCREEN, " NewKeyX ", 0, SCREEN_HEIGHT-FONT_SIZE, GREEN, BLACK);
+	u8 keyX[16] = { 0xCE, 0xE7, 0xD8, 0xAB, 0x30, 0xC0, 0x0D, 0xAE, 0x85, 0x0E, 0xF5, 0xE3, 0x82, 0xAC, 0x5A, 0xF3 };
+	setup_aeskeyX(0x25, keyX);
 		
 	DrawString(TOP_SCREEN, " EmuNAND ", 0, SCREEN_HEIGHT-FONT_SIZE*2, checkEmuNAND() ? GREEN : RED, BLACK);
 
@@ -78,8 +76,8 @@ int main(){
 	MenuShow();
 
 	while (true) {
-		DrawString(TOP_SCREEN,  "[SELECT] Reboot", SCREEN_WIDTH-51-18*FONT_SIZE, SCREEN_HEIGHT-59-24-FONT_SIZE, RED, BLACK);
-		DrawString(TOP_SCREEN,  "[START]  Shutdown", SCREEN_WIDTH-51-18*FONT_SIZE, SCREEN_HEIGHT-59-24, RED, BLACK);
+		DrawString(TOP_SCREEN,  "[START]  Shutdown", SCREEN_WIDTH-51-18*FONT_SIZE, SCREEN_HEIGHT-59-24-FONT_SIZE, RED, BLACK);
+		DrawString(TOP_SCREEN,  "[SELECT] Reboot", SCREEN_WIDTH-51-18*FONT_SIZE, SCREEN_HEIGHT-59-24, RED, BLACK);
 		u32 pad_state = InputWait();
 		if(pad_state & BUTTON_DOWN) 	MenuNextSelection();
 		if(pad_state & BUTTON_UP)   	MenuPrevSelection();
