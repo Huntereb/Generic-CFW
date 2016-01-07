@@ -44,7 +44,7 @@ void patch_processes(){
 			}
 		}
 		//System Settings label
-		if(cfw_strcmp(mset - i, "Ver.", 4, 2, 1)){
+		if(cfw_strcmp(mset - i, "Ver. %d.%d.%d-", 14, 2, 1)){
 			cfw_strcpy(mset - i, "CuCkD", 5, 2, 1);
 		}
 	}
