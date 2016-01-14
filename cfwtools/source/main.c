@@ -69,7 +69,7 @@ int main(){
 	u8 keyX[16] = { 0xCE, 0xE7, 0xD8, 0xAB, 0x30, 0xC0, 0x0D, 0xAE, 0x85, 0x0E, 0xF5, 0xE3, 0x82, 0xAC, 0x5A, 0xF3 };
 	setup_aeskeyX(0x25, keyX);
 		
-	DrawString(TOP_SCREEN, " EmuNAND ", 0, SCREEN_HEIGHT-FONT_SIZE*2, checkEmuNAND() ? GREEN : RED, BLACK);
+	DrawString(TOP_SCREEN, " EmuNAND ", 0, SCREEN_HEIGHT-FONT_SIZE, checkEmuNAND() ? GREEN : RED, BLACK);
 
 	//That's the Main Menu initialization, easy and cool
 	MenuInit(&MainMenu);

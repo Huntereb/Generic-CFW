@@ -183,6 +183,7 @@ void RebuildNand(){
 	unsigned int p_size[] = { 0x08FB5200, 0x020B6600, 0x00030000, 0x00400000, 0x00400000, 0x2F3E3600};
 	unsigned int p_addr[] = { TWLN, TWLP, AGB_SAVE, FIRM0, FIRM1, CTRNAND };
 	int sect_row = 0x1;			//Slow, ok, but secure
+	int opened;
 
 	ConsoleInit();
 	int isEmuNand = checkEmuNAND();
@@ -196,7 +197,8 @@ void RebuildNand(){
 	for(int i = 3; i < 6; i++){		//Cutting out twln, twlp and agb_save. Todo: Properly decrypt them
 		File out;
 		sprintf(myString, isEmuNand ? "tools/nand/emu_%s" : "tools/nand/%s", p_name[i]);
-		if(FileOpen(&out, myString, 0)){
+		opened = FileOpen(&out, myString, 0);
+		if(opened){
 			print(isEmuNand ? "Injecting emu_%s\n" : "Injecting %s\n", p_name[i]);
 			ConsoleShow();
 
@@ -210,6 +212,9 @@ void RebuildNand(){
 			}
 			FileClose(&out);
 		}
+	}
+	if(!opened) {
+		print("\nNo NAND.bin found in tools/nand/!\n");
 	}
 	print("\nPress A to exit\n"); ConsoleShow();
 	WaitForButton(BUTTON_A);
